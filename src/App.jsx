@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://purchases-programmes-southampton-adjusted.trycloudflare.com'
+    ? 'https://mono-sensitive-measurement-submit.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
