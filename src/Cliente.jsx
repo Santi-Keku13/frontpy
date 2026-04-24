@@ -59,7 +59,7 @@ const Cliente = ({ apiUrl }) => {  // ✅ Ya no necesita wsUrl
     audio.play().catch(() => {});
   };
 
-  const imagenPropaganda = "/assets/propaganda.jpeg";
+  const imagenPropaganda = "/assets/propaganda2.png";
 
   return (
     <div style={styles.viewPort}>
