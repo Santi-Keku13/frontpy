@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? ' https://autumn-contributor-specialized-brain.trycloudflare.com'
+    ? ' https://recent-flows-through-polyphonic.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
