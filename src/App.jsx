@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://pad-hydrogen-colleagues-arrival.trycloudflare.com'
+    ? 'https://caused-bedding-danny-publication.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
@@ -41,15 +41,13 @@ function App() {
 
       <div className="info-dev">
         <p>
-          {import.meta.env.PROD ? '🚀 PRODUCCIÓN' : '🛠️ DESARROLLO'} | 
+          {import.meta.env.PROD ? ' PRODUCCIÓN' : ' DESARROLLO'} | 
           Modo: <strong>{modo.toUpperCase()}</strong>
         </p>
         <p>
           Desarrollado por FullStack Vera Santiago
         </p>
-        <p className="hint">
-          Sistema de Turnos - Backend Python (Sin WebSocket)
-        </p>
+        
       </div>
     </div>
   );
