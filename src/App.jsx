@@ -23,13 +23,13 @@ function App() {
           className={modo === 'cajero' ? 'active' : ''}
           onClick={() => setModo('cajero')}
         >
-          👨‍💼 Modo Cajero
+           Modo Cajero
         </button>
         <button 
           className={modo === 'cliente' ? 'active' : ''}
           onClick={() => setModo('cliente')}
         >
-          👥 Modo Cliente
+           Modo Cliente
         </button>
       </div>
 

@@ -1,9 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const Cliente = ({ apiUrl }) => {  // ✅ Ya no necesita wsUrl
+const Cliente = ({ apiUrl }) => {  
   const [ultimoTurno, setUltimoTurno] = useState(null);
   const timerRef = useRef(null);
   const pollingRef = useRef(null);
+
+  // --- NUEVA CONFIGURACIÓN PARA EL CARRUSEL ---
+  // 1. Agrega aquí las rutas de todas tus imágenes de propaganda
+  const imagenesPropaganda = [
+    "/assets/propaganda2.png",
+    "/assets/propaganda.jpeg",
+    "/assets/propaganda3.jpeg",
+    "/assets/propaganda4.jpeg",
+    "/assets/propaganda5.jpeg",
+    "/assets/propaganda6.jpeg", // Asegúrate de que existan en tu carpeta public/assets
+  ];
+  
+  const [imagenActualIdx, setImagenActualIdx] = useState(0);
+
+  // 2. Efecto para cambiar automáticamente de imagen cada 5 segundos
+  useEffect(() => {
+    const carruselInterval = setInterval(() => {
+      setImagenActualIdx((prevIdx) => (prevIdx + 1) % imagenesPropaganda.length);
+    },10000); // 10000ms = 10 segundos
+
+    return () => clearInterval(carruselInterval);
+  }, [imagenesPropaganda.length]);
+  // --------------------------------------------
 
   // Temporizador de 10 minutos para borrar el turno
   useEffect(() => {
@@ -18,7 +41,7 @@ const Cliente = ({ apiUrl }) => {  // ✅ Ya no necesita wsUrl
     };
   }, [ultimoTurno]);
 
-  // ✅ Polling: consultar cada 3 segundos si hay nuevo turno
+  // Polling: consultar cada 3 segundos si hay nuevo turno
   useEffect(() => {
     const fetchUltimoTurno = async () => {
       try {
@@ -32,7 +55,6 @@ const Cliente = ({ apiUrl }) => {  // ✅ Ya no necesita wsUrl
             hora: data.ultimoTurno.hora
           };
           
-          // Solo actualizar si es un turno nuevo (diferente al actual)
           if (!ultimoTurno || ultimoTurno.turno !== turnoActual.turno || ultimoTurno.caja !== turnoActual.caja) {
             setUltimoTurno(turnoActual);
             reproducirSonido();
@@ -43,10 +65,7 @@ const Cliente = ({ apiUrl }) => {  // ✅ Ya no necesita wsUrl
       }
     };
 
-    // Consultar inmediatamente al montar
     fetchUltimoTurno();
-    
-    // Consultar cada 3 segundos
     pollingRef.current = setInterval(fetchUltimoTurno, 3000);
     
     return () => {
@@ -59,7 +78,8 @@ const Cliente = ({ apiUrl }) => {  // ✅ Ya no necesita wsUrl
     audio.play().catch(() => {});
   };
 
-  const imagenPropaganda = "/assets/propaganda2.png";
+  // Guardamos la imagen que toca mostrar según el índice actual
+  const imagenMostrar = imagenesPropaganda[imagenActualIdx];
 
   return (
     <div style={styles.viewPort}>
@@ -70,18 +90,23 @@ const Cliente = ({ apiUrl }) => {  // ✅ Ya no necesita wsUrl
         </header>
 
         <main style={styles.mainContent}>
+          {/* SECCIÓN DEL VIDEO/CARRUSEL MODIFICADA */}
           <div style={{
             ...styles.videoSection,
-            backgroundImage: `url(${imagenPropaganda})`,
+            backgroundImage: `url(${imagenMostrar})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            transition: 'background-image 0.5s ease-in-out' // Suaviza el cambio de fondo blur
           }}>
             <div style={styles.blurOverlay}>
               <img 
-                key="video-display"
-                src={imagenPropaganda} 
-                style={styles.videoPlayer}
-                alt="Propaganda"
+                key={imagenActualIdx} // 'key' vital aquí para que React note el cambio y aplique animaciones si quisieras
+                src={imagenMostrar} 
+                style={{
+                  ...styles.videoPlayer,
+                  transition: 'opacity 0.5s ease-in-out' // Transición suave para la imagen principal
+                }}
+                alt={`Propaganda ${imagenActualIdx + 1}`}
               />
             </div>
           </div>
@@ -113,7 +138,7 @@ const Cliente = ({ apiUrl }) => {  // ✅ Ya no necesita wsUrl
   );
 };
 
-// Tus estilos se mantienen IGUALES
+// Tus estilos se mantienen exactamente IGUALES
 const styles = {
   viewPort: { 
     height: 'calc(100vh - 160px)', 

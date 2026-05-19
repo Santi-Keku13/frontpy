@@ -47,7 +47,7 @@ const Cajero = ({ apiUrl }) => {  // ← Recibe apiUrl como prop
 
   return (
     <div style={stylesCajero.container}>
-      <h1 style={stylesCajero.title}>🏪 PANEL DEL CAJERO</h1>
+      <h1 style={stylesCajero.title}> PANEL DEL CAJERO</h1>
       <div style={stylesCajero.content}>
         {error && <div style={{...stylesCajero.mensaje, backgroundColor: error.includes('✅') ? '#4CAF50' : '#f44336'}}>{error}</div>}
         
