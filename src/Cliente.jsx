@@ -14,8 +14,6 @@ const Cliente = ({ apiUrl }) => {
     "/assets/propaganda4.jpeg",
     "/assets/propaganda5.jpeg",
     "/assets/propaganda6.jpeg", // Asegúrate de que existan en tu carpeta public/assets
-    "/assets/propaganda7.jpeg",
-    "/assets/propaganda8.jpeg",
   ];
   
   const [imagenActualIdx, setImagenActualIdx] = useState(0);
