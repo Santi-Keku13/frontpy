@@ -9,10 +9,10 @@ const Cliente = ({ apiUrl }) => {
   // 1. Agrega aquí las rutas de todas tus imágenes de propaganda
   const imagenesPropaganda = [
     "/assets/propaganda2.png",
-    "/assets/propaganda.jpeg",
-    "/assets/propaganda1.jpeg",
+    "/assets/propaganda.png",
+    "/assets/propaganda1.png",
     "/assets/propaganda3.jpeg",
-    "/assets/propaganda5.jpeg",
+    "/assets/propaganda5.png",
     "/assets/propaganda6.jpeg",
      "/assets/propaganda7.jpeg", // Asegúrate de que existan en tu carpeta public/assets
   ];
