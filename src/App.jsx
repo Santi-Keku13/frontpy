@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://midnight-settlement-land-samples.trycloudflare.com'
+    ? 'https://gamecube-menu-blink-height.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
