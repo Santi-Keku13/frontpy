@@ -10,10 +10,9 @@ const Cliente = ({ apiUrl }) => {
   const imagenesPropaganda = [
     "/assets/propaganda2.png",
     "/assets/propaganda.png",
-    "/assets/propaganda1.png",
+    "/assets/propaganda1.jpeg",
     "/assets/propaganda3.jpeg",
-    "/assets/propaganda5.png",
-    "/assets/propaganda6.jpeg",
+    "/assets/propaganda4.jpeg",
      "/assets/propaganda7.jpeg", // Asegúrate de que existan en tu carpeta public/assets
   ];
   
