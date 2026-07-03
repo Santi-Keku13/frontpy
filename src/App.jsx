@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://gamecube-menu-blink-height.trycloudflare.com'
+    ? 'https://nuts-apparently-students-lives.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
