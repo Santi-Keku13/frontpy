@@ -13,6 +13,7 @@ const Cliente = ({ apiUrl }) => {
     "/assets/propaganda1.jpeg",
     "/assets/propaganda3.jpeg",
     "/assets/propaganda4.jpeg",
+    "/assets/propaganda6.jpeg",
      "/assets/propaganda7.jpeg", // Asegúrate de que existan en tu carpeta public/assets
   ];
   
