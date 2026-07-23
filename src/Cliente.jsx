@@ -56,9 +56,16 @@ const Cliente = ({ apiUrl }) => {
             hora: data.ultimoTurno.hora
           };
           
-          if (!ultimoTurno || ultimoTurno.turno !== turnoActual.turno || ultimoTurno.caja !== turnoActual.caja) {
+          // 1. Si es la primera vez que la pantalla carga (no hay ultimoTurno guardado), 
+          // guardamos el turno actual en silencio para mostrarlo en pantalla.
+          if (!ultimoTurno) {
             setUltimoTurno(turnoActual);
-            reproducirSonido();
+          } 
+          // 2. Si YA había un turno guardado y el nuevo turno/caja es DIFERENTE,
+          // significa que un cajero acaba de llamar -> AQUÍ SÍ SUENA.
+          else if (ultimoTurno.turno !== turnoActual.turno || ultimoTurno.caja !== turnoActual.caja) {
+            setUltimoTurno(turnoActual);
+            reproducirSonido(); 
           }
         }
       } catch (error) {
