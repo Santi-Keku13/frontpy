@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://niagara-theft-christina-source.trycloudflare.com'
+    ? 'https://transformation-teams-music-config.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
