@@ -4,9 +4,11 @@ const Cliente = ({ apiUrl }) => {
   const [ultimoTurno, setUltimoTurno] = useState(null);
   const timerRef = useRef(null);
   const pollingRef = useRef(null);
+  
+  // 🔴 REFERENCIA CLAVE: Guarda el id/turno único sin provocar re-renders ni romper el setInterval
+  const ultimoTurnoIdRef = useRef(null);
 
-  // --- NUEVA CONFIGURACIÓN PARA EL CARRUSEL ---
-  // 1. Agrega aquí las rutas de todas tus imágenes de propaganda
+  // --- CONFIGURACIÓN PARA EL CARRUSEL DE PROPAGANDA ---
   const imagenesPropaganda = [
     "/assets/propaganda2.png",
     "/assets/propaganda.png",
@@ -14,27 +16,27 @@ const Cliente = ({ apiUrl }) => {
     "/assets/propaganda3.jpeg",
     "/assets/propaganda4.jpeg",
     "/assets/propaganda6.jpeg",
-     "/assets/propaganda7.jpeg", // Asegúrate de que existan en tu carpeta public/assets
+    "/assets/propaganda7.jpeg",
   ];
   
   const [imagenActualIdx, setImagenActualIdx] = useState(0);
 
-  // 2. Efecto para cambiar automáticamente de imagen cada 5 segundos
+  // Cambiar imagen cada 10 segundos
   useEffect(() => {
     const carruselInterval = setInterval(() => {
       setImagenActualIdx((prevIdx) => (prevIdx + 1) % imagenesPropaganda.length);
-    },10000); // 10000ms = 10 segundos
+    }, 10000);
 
     return () => clearInterval(carruselInterval);
   }, [imagenesPropaganda.length]);
-  // --------------------------------------------
 
-  // Temporizador de 10 minutos para borrar el turno
+  // Temporizador para limpiar el turno de la pantalla tras 10 minutos de inactividad
   useEffect(() => {
     if (ultimoTurno) {
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
         setUltimoTurno(null);
+        ultimoTurnoIdRef.current = null;
       }, 10 * 60 * 1000);
     }
     return () => {
@@ -42,30 +44,47 @@ const Cliente = ({ apiUrl }) => {
     };
   }, [ultimoTurno]);
 
-  // Polling: consultar cada 3 segundos si hay nuevo turno
+  // Reproducir audio de alerta
+  const reproducirSonido = () => {
+    const audio = new Audio('/assets/llamador.mp3');
+    audio.play().catch((err) => {
+      console.warn("Autoplay bloqueado por el navegador hasta que interactúes con la pantalla:", err);
+    });
+  };
+
+  // 🔄 POLLING CORREGIDO
   useEffect(() => {
     const fetchUltimoTurno = async () => {
       try {
         const response = await fetch(`${apiUrl}/ultimo-turno`);
         const data = await response.json();
         
-        if (data.ultimoTurno) {
-          const turnoActual = {
-            caja: data.ultimoTurno.caja,
-            turno: data.ultimoTurno.turno,
-            hora: data.ultimoTurno.hora
-          };
+        if (data && data.ultimoTurno) {
+          const turnoRecibido = data.ultimoTurno;
           
-          // 1. Si es la primera vez que la pantalla carga (no hay ultimoTurno guardado), 
-          // guardamos el turno actual en silencio para mostrarlo en pantalla.
-          if (!ultimoTurno) {
-            setUltimoTurno(turnoActual);
+          // Creamos una firma única para el turno (id o combinación de caja y turno)
+          const identificadorTurno = turnoRecibido.id || `${turnoRecibido.caja}-${turnoRecibido.turno}`;
+
+          // Caso 1: Primera carga de la pantalla (inicialización silenciosa)
+          if (ultimoTurnoIdRef.current === null) {
+            ultimoTurnoIdRef.current = identificadorTurno;
+            setUltimoTurno({
+              caja: turnoRecibido.caja,
+              turno: turnoRecibido.turno,
+              hora: turnoRecibido.hora
+            });
           } 
-          // 2. Si YA había un turno guardado y el nuevo turno/caja es DIFERENTE,
-          // significa que un cajero acaba de llamar -> AQUÍ SÍ SUENA.
-          else if (ultimoTurno.turno !== turnoActual.turno || ultimoTurno.caja !== turnoActual.caja) {
-            setUltimoTurno(turnoActual);
-            reproducirSonido(); 
+          // Caso 2: El turno recibido es NUEVO y DIFERENTE al anterior -> ¡SUENA EL AUDIO!
+          else if (ultimoTurnoIdRef.current !== identificadorTurno) {
+            ultimoTurnoIdRef.current = identificadorTurno;
+            setUltimoTurno({
+              caja: turnoRecibido.caja,
+              turno: turnoRecibido.turno,
+              hora: turnoRecibido.hora
+            });
+            
+            // 🔔 SUENA ÚNICAMENTE AQUÍ
+            reproducirSonido();
           }
         }
       } catch (error) {
@@ -73,20 +92,17 @@ const Cliente = ({ apiUrl }) => {
       }
     };
 
+    // Consulta inicial inmediata
     fetchUltimoTurno();
+
+    // Consulta periódica cada 3 segundos sin reconstruirse
     pollingRef.current = setInterval(fetchUltimoTurno, 3000);
     
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
     };
-  }, [apiUrl, ultimoTurno]);
+  }, [apiUrl]); // 🔴 Única dependencia es apiUrl
 
-  const reproducirSonido = () => {
-    const audio = new Audio('/assets/llamador.mp3');
-    audio.play().catch(() => {});
-  };
-
-  // Guardamos la imagen que toca mostrar según el índice actual
   const imagenMostrar = imagenesPropaganda[imagenActualIdx];
 
   return (
@@ -98,27 +114,28 @@ const Cliente = ({ apiUrl }) => {
         </header>
 
         <main style={styles.mainContent}>
-          {/* SECCIÓN DEL VIDEO/CARRUSEL MODIFICADA */}
+          {/* SECCIÓN DEL CARRUSEL DE IMÁGENES */}
           <div style={{
             ...styles.videoSection,
             backgroundImage: `url(${imagenMostrar})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            transition: 'background-image 0.5s ease-in-out' // Suaviza el cambio de fondo blur
+            transition: 'background-image 0.5s ease-in-out'
           }}>
             <div style={styles.blurOverlay}>
               <img 
-                key={imagenActualIdx} // 'key' vital aquí para que React note el cambio y aplique animaciones si quisieras
+                key={imagenActualIdx} 
                 src={imagenMostrar} 
                 style={{
                   ...styles.videoPlayer,
-                  transition: 'opacity 0.5s ease-in-out' // Transición suave para la imagen principal
+                  transition: 'opacity 0.5s ease-in-out'
                 }}
                 alt={`Propaganda ${imagenActualIdx + 1}`}
               />
             </div>
           </div>
 
+          {/* SECCIÓN DEL DISPLAY DE TURNO */}
           <div style={styles.turnoSection}>
             <div style={{
               ...styles.display,
@@ -146,7 +163,6 @@ const Cliente = ({ apiUrl }) => {
   );
 };
 
-// Tus estilos se mantienen exactamente IGUALES
 const styles = {
   viewPort: { 
     height: 'calc(100vh - 160px)', 
