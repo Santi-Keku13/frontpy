@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://discrimination-recovery-patents-extraction.trycloudflare.com'
+    ? 'https://biodiversity-attachments-radius-disposition.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
