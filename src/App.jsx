@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://biodiversity-attachments-radius-disposition.trycloudflare.com'
+    ? 'https://protocol-shares-villas-refer.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
