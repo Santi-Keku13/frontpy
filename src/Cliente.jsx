@@ -11,6 +11,8 @@ const Cliente = ({ apiUrl }) => {
   // --- CONFIGURACIÓN PARA EL CARRUSEL DE PROPAGANDA ---
   const imagenesPropaganda = [
     "/assets/propaganda2.png",
+    "/assets/propaganda3.jpeg",
+    "/assets/propaganda4.jpeg",
     "/assets/propaganda5.jpeg",
     "/assets/propaganda6.jpeg",
     "/assets/propaganda7.jpeg",
@@ -140,11 +142,11 @@ const Cliente = ({ apiUrl }) => {
             }}>
               {ultimoTurno ? (
                 <div style={styles.contentWrapper}>
-                  <div style={styles.mensaje}>PASE A</div>
+                  <div style={styles.mensaje}>PASE POR LA CAJA</div>
                   <div style={styles.cajaNumero}>
                     {ultimoTurno.caja}
                   </div>
-                  <div style={styles.cajaLabel}>CAJA</div>
+                  <div style={styles.cajaLabel}>mUCHAS GRACIAS</div>
                 </div>
               ) : (
                 <div style={styles.esperando}>
