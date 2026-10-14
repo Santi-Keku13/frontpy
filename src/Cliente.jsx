@@ -4,8 +4,6 @@ const Cliente = ({ apiUrl }) => {
   const [ultimoTurno, setUltimoTurno] = useState(null);
   const timerRef = useRef(null);
   const pollingRef = useRef(null);
-  
-  // 🔴 REFERENCIA CLAVE: Guarda el id/turno único sin provocar re-renders ni romper el setInterval
   const ultimoTurnoIdRef = useRef(null);
 
   // --- CONFIGURACIÓN PARA EL CARRUSEL DE PROPAGANDA ---
@@ -51,7 +49,7 @@ const Cliente = ({ apiUrl }) => {
     });
   };
 
-  // 🔄 POLLING CORREGIDO
+  // POLLING CORREGIDO
   useEffect(() => {
     const fetchUltimoTurno = async () => {
       try {
@@ -60,11 +58,8 @@ const Cliente = ({ apiUrl }) => {
         
         if (data && data.ultimoTurno) {
           const turnoRecibido = data.ultimoTurno;
-          
-          // Creamos una firma única para el turno (id o combinación de caja y turno)
           const identificadorTurno = turnoRecibido.id || `${turnoRecibido.caja}-${turnoRecibido.turno}`;
 
-          // Caso 1: Primera carga de la pantalla (inicialización silenciosa)
           if (ultimoTurnoIdRef.current === null) {
             ultimoTurnoIdRef.current = identificadorTurno;
             setUltimoTurno({
@@ -72,17 +67,13 @@ const Cliente = ({ apiUrl }) => {
               turno: turnoRecibido.turno,
               hora: turnoRecibido.hora
             });
-          } 
-          // Caso 2: El turno recibido es NUEVO y DIFERENTE al anterior -> ¡SUENA EL AUDIO!
-          else if (ultimoTurnoIdRef.current !== identificadorTurno) {
+          } else if (ultimoTurnoIdRef.current !== identificadorTurno) {
             ultimoTurnoIdRef.current = identificadorTurno;
             setUltimoTurno({
               caja: turnoRecibido.caja,
               turno: turnoRecibido.turno,
               hora: turnoRecibido.hora
             });
-            
-            // 🔔 SUENA ÚNICAMENTE AQUÍ
             reproducirSonido();
           }
         }
@@ -91,16 +82,13 @@ const Cliente = ({ apiUrl }) => {
       }
     };
 
-    // Consulta inicial inmediata
     fetchUltimoTurno();
-
-    // Consulta periódica cada 3 segundos sin reconstruirse
     pollingRef.current = setInterval(fetchUltimoTurno, 3000);
     
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
     };
-  }, [apiUrl]); // 🔴 Única dependencia es apiUrl
+  }, [apiUrl]);
 
   const imagenMostrar = imagenesPropaganda[imagenActualIdx];
 
@@ -108,8 +96,8 @@ const Cliente = ({ apiUrl }) => {
     <div style={styles.viewPort}>
       <div style={styles.container}>
         <header style={styles.header}>
-          <h1 style={styles.tituloPrincipal}>BLOW MAX</h1>
-          <p style={styles.eslogan}>El mayorista del centro</p>
+          <h1 style={styles.tituloPrincipal}>blowMax</h1>
+          <p style={styles.eslogan}>TU MAYORISTA</p>
         </header>
 
         <main style={styles.mainContent}>
@@ -146,7 +134,7 @@ const Cliente = ({ apiUrl }) => {
                   <div style={styles.cajaNumero}>
                     {ultimoTurno.caja}
                   </div>
-                  <div style={styles.cajaLabel}>  MUCHAS GRACIAS</div>
+                  <div style={styles.cajaLabel}>MUCHAS GRACIAS</div>
                 </div>
               ) : (
                 <div style={styles.esperando}>
@@ -164,12 +152,13 @@ const Cliente = ({ apiUrl }) => {
 
 const styles = {
   viewPort: { 
-    height: 'calc(100vh - 160px)', 
-    width: '100%', 
+    height: '100vh', 
+    width: '100vw', 
     overflow: 'hidden', 
     backgroundColor: '#fff',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    boxSizing: 'border-box'
   },
   container: { 
     height: '100%', 
@@ -180,22 +169,31 @@ const styles = {
   },
   header: { 
     textAlign: 'center', 
-    height: '12%', 
+    height: '14%', 
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: "'Varela Round', 'Nunito', sans-serif",
   },
   tituloPrincipal: { 
     fontSize: '7vh', 
     color: '#FF0000', 
     fontWeight: '900', 
     margin: 0,
-    lineHeight: 1
+    lineHeight: 1,
+    fontFamily: "'Varela Round', 'Nunito', sans-serif"
   },
-  eslogan: { fontSize: '2.5vh', color: '#cc0000', margin: 0 },
+  eslogan: { 
+    fontSize: '2.5vh', 
+    color: '#cc0000', 
+    margin: 0,
+    fontWeight: 'bold',
+    fontFamily: "'Varela Round', 'Nunito', sans-serif"
+  },
   mainContent: { 
     display: 'flex', 
-    height: '88%', 
+    height: '86%', 
     gap: '20px', 
     paddingBottom: '10px'
   },
@@ -235,16 +233,21 @@ const styles = {
     alignItems: 'center', 
     justifyContent: 'space-around', 
     boxSizing: 'border-box',
-    padding: '2vh'
+    padding: '2vh',
+    fontFamily: "'Varela Round', 'Nunito', sans-serif"
   },
   contentWrapper: { 
-    display: 'flex', flexDirection: 'column', alignItems: 'center', 
-    justifyContent: 'space-between', height: '100%', width: '100%' 
+    display: 'flex', 
+    flexDirection: 'column', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    height: '100%', 
+    width: '100%' 
   },
-  mensaje: { fontSize: '5vh', fontWeight: 'bold', color: '#FF0000' },
-  cajaLabel: { fontSize: '6vh', fontWeight: 'bold', color: '#FF0000' },
-  cajaNumero: { fontSize: '30vh', fontWeight: '900', color: '#FF0000', lineHeight: 0.8 },
-  esperando: { textAlign: 'center', color: '#FF0000' },
+  mensaje: { fontSize: '5vh', fontWeight: 'bold', color: '#FF0000', fontFamily: "'Varela Round', sans-serif" },
+  cajaLabel: { fontSize: '6vh', fontWeight: 'bold', color: '#FF0000', fontFamily: "'Varela Round', sans-serif" },
+  cajaNumero: { fontSize: '30vh', fontWeight: '900', color: '#FF0000', lineHeight: 0.8, fontFamily: "'Varela Round', sans-serif" },
+  esperando: { textAlign: 'center', color: '#FF0000', fontFamily: "'Varela Round', sans-serif" },
   textoEspera: { fontSize: '7vh', fontWeight: 'bold' },
   subtextoEspera: { fontSize: '3vh', opacity: 0.5 },
   displayActivo: { boxShadow: '0 0 40px rgba(255, 0, 0, 0.4)' }

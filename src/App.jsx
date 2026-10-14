@@ -8,47 +8,47 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://gage-conviction-alberta-witnesses.trycloudflare.com'
+    ? 'https://overnight-subjective-abilities-dozen.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
 
-  console.log('🔧 URLs configuradas (Sin WebSocket):');
-  console.log('  API:', API_URL);
-  
   return (
     <div className="app">
+      {/* Barra superior de selección */}
       <div className="modo-selector">
         <button 
           className={modo === 'cajero' ? 'active' : ''}
           onClick={() => setModo('cajero')}
         >
-           Modo Cajero
+          Modo Cajero
         </button>
         <button 
           className={modo === 'cliente' ? 'active' : ''}
           onClick={() => setModo('cliente')}
         >
-           Modo Cliente
+          Modo Cliente
         </button>
       </div>
 
-      {modo === 'cajero' ? (
-        <Cajero apiUrl={API_URL} />
-      ) : (
-        <Cliente apiUrl={API_URL} /> 
-      )}
-
-      <div className="info-dev">
-        <p>
-          {import.meta.env.PROD ? ' PRODUCCIÓN' : ' DESARROLLO'} | 
-          Modo: <strong>{modo.toUpperCase()}</strong>
-        </p>
-        <p>
-          Desarrollado por FullStack Vera Santiago
-        </p>
-        
+      {/* Vista principal (ocupa todo el espacio sobrante) */}
+      <div className="app-content">
+        {modo === 'cajero' ? (
+          <Cajero apiUrl={API_URL} />
+        ) : (
+          <Cliente apiUrl={API_URL} /> 
+        )}
       </div>
+
+      {/* Pie de página con altura fija */}
+      <footer className="footer-profesional">
+        <p className="footer-copyright">
+          © {new Date().getFullYear()} <strong>Blowmax</strong>. Todos los derechos reservados.
+        </p>
+        <p className="footer-autor">
+          desarrollado por Vera Santiago
+        </p>
+      </footer>
     </div>
   );
 }
