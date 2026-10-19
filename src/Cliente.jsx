@@ -8,6 +8,7 @@ const Cliente = ({ apiUrl }) => {
 
   // --- CONFIGURACIÓN PARA EL CARRUSEL DE PROPAGANDA ---
   const imagenesPropaganda = [
+    "/assets/propaganda1.jpeg",
     "/assets/propaganda2.png",
     "/assets/propaganda3.jpeg",
     "/assets/propaganda4.jpeg",
