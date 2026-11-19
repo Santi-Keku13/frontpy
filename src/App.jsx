@@ -8,7 +8,7 @@ function App() {
   
   // URL BASE
   const BASE_URL = import.meta.env.PROD 
-    ? 'https://nurse-swim-kinase-pee.trycloudflare.com'
+    ? 'https://cleaning-massachusetts-fairy-item.trycloudflare.com'
     : 'http://localhost:5000';
   
   const API_URL = `${BASE_URL}/api`;
